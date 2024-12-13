@@ -15,7 +15,14 @@ func main() {
 
 	if *f_path == "" {
 		fmt.Println("err: path is empty");
-		os.Exit(0);
+		os.Exit(1);
+	}
+	
+	var err error;
+	_, err = os.Stat(*f_path);
+	if err != nil {
+		fmt.Println("err: open file");
+		os.Exit(1)
 	}
 
 	switch {
