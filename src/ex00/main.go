@@ -27,7 +27,7 @@ type Ingredient struct {
 
 type DBReader interface {
 	Read(f_path *string) error
-	toString() string
+	ToString() string
 }
 
 type JSONReader struct {
@@ -56,7 +56,7 @@ func (j *JSONReader) Read(f_path *string) error {
 	return nil
 }
 
-func (j JSONReader) toString() string {
+func (j JSONReader) ToString() string {
 	var result []byte
 	var err error
 	result, err = xml.MarshalIndent(j.recipes, "", " ")
@@ -84,7 +84,7 @@ func (x *XMLReader) Read(f_path *string) error {
 	return nil
 }
 
-func (x XMLReader) toString() string {
+func (x XMLReader) ToString() string {
 	var result []byte
 	var err error
 	result, err = json.MarshalIndent(x.recipes, "", " ")
@@ -104,16 +104,6 @@ func get_DB_reader(f_path *string) (DBReader, error) {
 	}
 }
 
-func print_json(recipes []Recipe) string {
-	var result []byte
-	var err error
-	result, err = json.MarshalIndent(recipes, "", " ")
-	if err != nil {
-		return fmt.Sprintf("error while printing: %+v", err)
-	}
-	return string(result)
-}
-
 func main() {
 	var f_path *string = nil
 	f_path = flag.String("f", "", "path to the file")
@@ -131,5 +121,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println(db_reader.toString())
+	fmt.Println(db_reader.ToString())
 }
