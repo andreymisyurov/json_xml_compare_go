@@ -25,41 +25,67 @@ func Get_DB_reader(f_path *string) (DBReader, error) {
 	}
 }
 
-func Compare(old DBReader, new DBReader) error {
-	var map_old map[string]Recipe
-	var map_new map[string]Recipe
-	map_old = old.GetMap()
-	map_new = new.GetMap()
+func handleUnitCompare(unit_old, unit_new, recipe_name, ingredient_name string) {
+	if unit_old != unit_new {
+		if unit_new == "" {
+			fmt.Printf("REMOVED unit for ingredient \"%s\" for cake \"%s\"\n", unit_old, recipe_name)
+		} else if unit_old == "" {
+			fmt.Printf("ADDED unit for ingredient \"%s\" for cake \"%s\"\n", unit_new, recipe_name)
+		} else {
+			fmt.Printf("CHANGED unit for ingredient \"%s\" for cake \"%s\" - \"%s\" instead of \"%s\"\n",
+				ingredient_name, recipe_name, unit_new, unit_old)
+		}
+	}
+}
 
+func handleIngredientChanges(ing_old, ing_new map[string]Ingredient, recipe_name string) {
+	for _, unit := range ing_new {
+		if _, exists := ing_old[unit.Name]; !exists {
+			fmt.Printf("ADDED ingredient \"%s\" for cake \"%s\"\n", unit.Name, recipe_name)
+		}
+	}
+	for _, unit := range ing_old {
+		if _, exists := ing_new[unit.Name]; !exists {
+			fmt.Printf("REMOVED ingredient \"%s\" for cake \"%s\"\n", unit.Name, recipe_name)
+		} else {
+			if unit.Count != ing_new[unit.Name].Count {
+				fmt.Printf("CHANGED unit count for ingredient \"%s\" for cake \"%s\" - \"%s\" instead of \"%s\"\n", unit.Name, recipe_name, ing_new[unit.Name].Count, unit.Count)
+			}
+			handleUnitCompare(unit.Unit, ing_new[unit.Name].Unit, recipe_name, unit.Name)
+		}
+	}
+}
+
+func handleModifiedCake(map_old, map_new map[string]Recipe) {
+	for _, old_recipe := range map_old {
+		new_recipe, exists := map_new[old_recipe.Name]
+		if exists {
+			if old_recipe.Time != new_recipe.Time {
+				fmt.Printf("CHANGED cooking time for cake \"%s\" - \"%s\" instead of \"%s\"\n",
+					old_recipe.Name, new_recipe.Time, old_recipe.Time)
+			}
+			handleIngredientChanges(getIngrMap(old_recipe.Ingredients), getIngrMap(new_recipe.Ingredients), old_recipe.Name)
+		}
+	}
+}
+
+func handleCakes(map_old, map_new map[string]Recipe) {
 	for _, recipe := range map_new {
 		if _, exists := map_old[recipe.Name]; !exists {
 			fmt.Printf("ADDED cake \"%s\"\n", recipe.Name)
-			continue
 		}
 	}
-
 	for _, recipe := range map_old {
 		if _, exists := map_new[recipe.Name]; !exists {
 			fmt.Printf("REMOVED cake \"%s\"\n", recipe.Name)
-			continue
 		} else {
-			if recipe.Time != map_new[recipe.Name].Time {
-				fmt.Printf("CHANGED cooking time for cake \"%s\" - \"%s\" instead of \"%s\"\n", recipe.Name, recipe.Time, map_new[recipe.Name].Time)
-			}
-			var ing_map_o map[string]Ingredient
-			var ing_map_n map[string]Ingredient
-			ing_map_o = getIngrMap(recipe.Ingredients)
-			ing_map_n = getIngrMap(map_new[recipe.Name].Ingredients)
-			for _, unit := range ing_map_o {
-				if _, exists := ing_map_n[unit.Name]; !exists {
-					fmt.Printf("REMOVED ingredient \"%s\" for cake \"%s\"\n", unit.Name, recipe.Name)
-					continue
-				} else {
-					// FIXME
-				}
-			}
+			handleModifiedCake(map_old, map_new)
 		}
 	}
+}
+
+func Compare(old DBReader, new DBReader) error {
+	handleCakes(old.GetMap(), new.GetMap())
 	return nil
 }
 
