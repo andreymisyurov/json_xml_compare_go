@@ -41,11 +41,23 @@ func main() {
 		os.Exit(1)
 	}
 
-	file, err = os.Open(*f_path_1)
+	file, err = os.Open(*f_path_2)
+	scanner = bufio.NewScanner(file)
+	
+	for scanner.Scan() {
+		line = scanner.Text()
+		if !base[line] {
+			fmt.Println("ADDED", line)
+		}
+		delete(base, line)
+	}
+
 	if err != nil {
 		fmt.Printf("err: can not open %s\n", *f_path_1)
 		os.Exit(1)
 	}
 
-
+	for line, _ := range base {
+		fmt.Println("REMOVED", line)
+	}
 }
