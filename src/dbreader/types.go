@@ -1,6 +1,10 @@
 package dbreader
+import (
+	"encoding/xml"
+)
 
 type RecipeData struct {
+	XMLName xml.Name `json:"-" xml:"recipes"`
 	Cakes []Recipe `json:"cake" xml:"cake"`
 }
 

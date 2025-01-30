@@ -41,4 +41,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	file, err = os.Open(*f_path_1)
+	if err != nil {
+		fmt.Printf("err: can not open %s\n", *f_path_1)
+		os.Exit(1)
+	}
+
+
 }

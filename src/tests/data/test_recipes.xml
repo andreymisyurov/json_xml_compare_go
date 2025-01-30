@@ -1,0 +1,18 @@
+<recipes>
+    <cake>
+        <name>Test Cake</name>
+        <stovetime>30 min</stovetime>
+        <ingredients>
+            <item>
+                <itemname>Flour</itemname>
+                <itemcount>2</itemcount>
+                <itemunit>cups</itemunit>
+            </item>
+            <item>
+                <itemname>Sugar</itemname>
+                <itemcount>1</itemcount>
+                <itemunit>cups</itemunit>
+            </item>
+        </ingredients>
+    </cake>
+</recipes>

@@ -32,7 +32,9 @@ func (j *JSONReader) Read(f_path *string) error {
 func (j JSONReader) ToString() string {
 	var result []byte
 	var err error
-	result, err = xml.MarshalIndent(j.recipes, "", " ")
+	var data RecipeData
+	data = RecipeData{Cakes: j.recipes}
+	result, err = xml.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return fmt.Sprintf("error while printing: %+v", err)
 	}

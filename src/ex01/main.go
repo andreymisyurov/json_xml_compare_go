@@ -35,9 +35,7 @@ func main() {
 	}
 
 	db_reader_old.Read(f_path_old)
-	fmt.Println(db_reader_old.ToString())
 	db_reader_new.Read(f_path_new)
-	fmt.Println(db_reader_new.ToString())
 
 	dbreader.Compare(db_reader_old, db_reader_new)
 }

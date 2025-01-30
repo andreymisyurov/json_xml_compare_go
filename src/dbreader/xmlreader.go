@@ -32,7 +32,9 @@ func (x *XMLReader) Read(f_path *string) error {
 func (x XMLReader) ToString() string {
 	var result []byte
 	var err error
-	result, err = json.MarshalIndent(x.recipes, "", " ")
+	var data RecipeData
+	data = RecipeData{Cakes: x.recipes}
+	result, err = json.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return fmt.Sprintf("error while printing: %+v", err)
 	}

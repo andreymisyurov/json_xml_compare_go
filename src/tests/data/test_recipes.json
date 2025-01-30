@@ -1,0 +1,20 @@
+{
+    "cake": [
+        {
+            "name": "Test Cake",
+            "time": "30 min",
+            "ingredients": [
+                {
+                    "ingredient_name": "Flour",
+                    "ingredient_count": "2",
+                    "ingredient_unit": "cups"
+                },
+                {
+                    "ingredient_name": "Sugar",
+                    "ingredient_count": "1",
+                    "ingredient_unit": "cups"
+                }
+            ]
+        }
+    ]
+}
